@@ -1,5 +1,9 @@
 # Jaloane de proiect
 
+**Deschide lecția și simularea / Open the lesson and simulation:** https://herodot91.github.io/jaloane-proiect/
+
+Fără cont, fără instalare. Merge și pe telefon. / No account, no install. Works on phones.
+
 Depozitul public este acesta. Deschide-l direct, nu aștepta lista de pe profil:
 
 https://github.com/Herodot91/jaloane-proiect
