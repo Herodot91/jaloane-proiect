@@ -1,5 +1,11 @@
 # Jaloane de proiect
 
+Depozitul public este acesta. Deschide-l direct, nu aștepta lista de pe profil:
+
+https://github.com/Herodot91/jaloane-proiect
+
+Dacă nu apare încă în https://github.com/Herodot91?tab=repositories, GitHub întârzie uneori lista. Linkul de mai sus funcționează.
+
 Lecție interactivă pentru studenții de Informatică aplicată (BEng).
 
 - Partea 1, lecție: ce este un jalon, cum îl recunoști, unda analistului, schema celor 8 etape.

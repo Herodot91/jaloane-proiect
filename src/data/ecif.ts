@@ -13,7 +13,8 @@ export const ECIF_ROWS: EcifRow[] = [
   {
     id: "kickoff",
     name: "Project Kick-off",
-    description: "Contractul este semnat și comanda este aprobată înainte să înceapă lucrul.",
+    description:
+      "Contractul este semnat și comanda este aprobată înainte să înceapă lucrul.",
     deadline: "2 mar. 2026",
     amountUsd: 10_000,
     amountLabel: "10.000 USD",
@@ -69,3 +70,14 @@ export const ECIF_RELEASE_AT: Record<string, number> = {
   mid: 3,
   final: 5,
 };
+
+export const ECIF_GAP = [
+  "",
+  "",
+  "Planul nu are tranșă nouă. Midpoint se eliberează când dezvoltarea este trecută, în ordine.",
+  "",
+  "Testul de calitate nu are tranșă nouă. Intră în Final Deliverable, împreună cu acceptarea.",
+  "",
+  "Lansarea nu este plătită separat în cazul ECIF.",
+  "Suportul de după proiect nu este plătit în cazul ECIF.",
+];
