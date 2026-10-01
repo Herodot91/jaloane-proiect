@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Lecție interactivă despre jaloanele de proiect software, cu simulare. RO și EN.">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Jaloane de proiect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: one reading column (max 980px), sticky top bar with RO/EN + two parts; the lesson reads top to bottom, the simulator is a form above a working table. Palette and faces follow the repo's src/styles.css. */
+:root {
+  --paper: #f3efe6;
+  --ink: #1c1915;
+  --muted: #5e584e;
+  --line: #e3d9c8;
+  --card: #fffdf8;
+  --teal: #0f6e6b;
+  --teal-soft: #e5f3f2;
+  --amber: #9a6410;
+  --amber-soft: #f8efd8;
+  --bad: #a3361f;
+  --bad-soft: #f8e4dc;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #171512; --ink: #efe9dd; --muted: #aaa294; --line: #352f27; --card: #201d19;
+    --teal: #5cc2bd; --teal-soft: #15302f; --amber: #e0a94d; --amber-soft: #33281a;
+    --bad: #ec8a70; --bad-soft: #3a211a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #171512; --ink: #efe9dd; --muted: #aaa294; --line: #352f27; --card: #201d19;
+  --teal: #5cc2bd; --teal-soft: #15302f; --amber: #e0a94d; --amber-soft: #33281a;
+  --bad: #ec8a70; --bad-soft: #3a211a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 17px/1.55 var(--font-sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 650; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.7rem); }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.15rem; font-weight: 500; }
+p { text-wrap: pretty; margin: 0; max-width: 65ch; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 980px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 650; font-size: 1.05rem; margin-right: auto; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--card); }
+.seg button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font-weight: 600; font-size: .92rem; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--teal); color: var(--card); }
+
+main { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 44px; }
+section { display: grid; gap: 16px; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; color: var(--teal); }
+.lede { font-size: 1.12rem; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: .9rem; }
+
+.hero { display: grid; gap: 14px; padding-block: 8px; }
+.def { border-left: 3px solid var(--amber); background: var(--amber-soft); padding: 14px 18px; border-radius: 0 10px 10px 0; font-size: 1.08rem; max-width: 70ch; }
+.def b { font-family: var(--font-display); font-weight: 650; }
+
+/* quiz */
+.quiz { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.q { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.q-label { font-family: var(--font-display); font-size: 1.12rem; font-weight: 500; }
+.q-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 13px; font-weight: 600; font-size: .93rem; }
+.btn:hover { border-color: var(--teal); }
+.btn.primary { background: var(--teal); border-color: var(--teal); color: var(--card); }
+.btn.ghost { background: transparent; }
+.verdict { font-size: .95rem; display: grid; gap: 4px; }
+.pill { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .03em; padding: 2px 9px; border-radius: 999px; width: fit-content; }
+.pill.yes { background: var(--teal-soft); color: var(--teal); }
+.pill.no { background: var(--amber-soft); color: var(--amber); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.score { font-weight: 600; }
+
+/* flow */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; }
+.flow .step { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.flow .step.key { border-color: var(--teal); background: var(--teal-soft); }
+.flow .arrow { align-self: center; color: var(--muted); font-size: 1.4rem; }
+@media (max-width: 720px) { .flow { grid-template-columns: 1fr; } .flow .arrow { transform: rotate(90deg); justify-self: center; } }
+
+/* wave */
+.wave-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; overflow-x: auto; }
+.wave-wrap svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.wave-note { padding: 10px 14px; border-radius: 8px; background: var(--teal-soft); min-height: 3.2em; }
+
+/* stages scheme */
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; counter-reset: st; }
+.stage { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.stage .n { font-family: var(--font-display); font-size: 1.6rem; color: var(--teal); line-height: 1; }
+.stage .ms { font-weight: 700; }
+.stage .ev { font-size: .9rem; color: var(--muted); }
+.stage .ch { font-size: .82rem; color: var(--amber); font-weight: 600; }
+
+.cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 18px; border: 1px dashed var(--teal); border-radius: 12px; }
+
+/* simulator */
+.form { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; grid-template-columns: repeat(6, 1fr); }
+.f { display: grid; gap: 5px; min-width: 0; }
+.f label { font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.f input, .f select, .f textarea { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 8px 10px; }
+.f textarea { resize: vertical; min-height: 64px; }
+.c6 { grid-column: span 6; } .c3 { grid-column: span 3; } .c2 { grid-column: span 2; }
+@media (max-width: 720px) { .c3, .c2 { grid-column: span 6; } }
+.example { font-size: .85rem; color: var(--amber); font-weight: 600; }
+
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 2px; }
+.tile .k { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+.tile .v { font-family: var(--font-display); font-size: 1.45rem; font-variant-numeric: tabular-nums; }
+.meter { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; margin-top: 6px; }
+.meter i { display: block; height: 100%; background: var(--teal); width: 0; transition: width .3s; }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: .94rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--paper); }
+tr:last-child td { border-bottom: 0; }
+tr.done td { background: var(--teal-soft); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td input[type="number"] { width: 64px; text-align: right; }
+td input[type="date"] { width: 140px; }
+td input[type="number"], td input[type="date"] { border: 1px solid var(--line); background: var(--paper); border-radius: 6px; padding: 4px 6px; }
+td input.warn { border-color: var(--bad); background: var(--bad-soft); }
+.ms-name { font-weight: 700; }
+.ev-name { color: var(--muted); font-size: .88rem; }
+.ecif-cell { font-size: .86rem; }
+.ecif-cell b { color: var(--amber); }
+tfoot td { font-weight: 700; background: var(--paper); }
+.chk { width: 20px; height: 20px; accent-color: var(--teal); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.toast { font-size: .9rem; color: var(--teal); font-weight: 600; }
+.warns { display: grid; gap: 6px; }
+.warns:empty { display: none; }
+.warn-line { background: var(--bad-soft); color: var(--bad); border-radius: 8px; padding: 8px 12px; font-size: .93rem; }
+
+.ecif { display: grid; gap: 12px; padding: 18px; border-radius: 12px; background: var(--amber-soft); }
+.ecif table { min-width: 640px; }
+.ecif .tbl-wrap { background: var(--card); }
+tr.paid td { background: var(--teal-soft); }
+.toggle { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <span class="brand" data-t="brand"></span>
+    <div class="seg" role="group" aria-label="Part">
+      <button id="tab-learn" data-tab="learn" data-t="tabLearn"></button>
+      <button id="tab-sim" data-tab="sim" data-t="tabSim"></button>
+    </div>
+    <div class="seg" role="group" aria-label="Language">
+      <button id="lang-ro" data-lang="ro">RO</button>
+      <button id="lang-en" data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- PART 1 -->
+  <div id="learn" style="display:grid;gap:44px">
+    <section class="hero">
+      <span class="eyebrow" data-t="p1eyebrow"></span>
+      <h1 data-t="p1title"></h1>
+      <p class="lede" data-t="p1lede"></p>
+      <p class="def" data-t="definition"></p>
+    </section>
+
+    <section>
+      <span class="eyebrow" data-t="quizEyebrow"></span>
+      <h2 data-t="quizTitle"></h2>
+      <p class="muted" data-t="quizHelp"></p>
+      <div class="quiz" id="quiz"></div>
+      <p class="score" id="score"></p>
+    </section>
+
+    <section>
+      <span class="eyebrow" data-t="flowEyebrow"></span>
+      <h2 data-t="flowTitle"></h2>
+      <div class="flow" id="flow"></div>
+    </section>
+
+    <section>
+      <span class="eyebrow" data-t="waveEyebrow"></span>
+      <h2 data-t="waveTitle"></h2>
+      <p class="muted" data-t="waveHelp"></p>
+      <div class="wave-wrap"><svg id="wave" viewBox="0 0 800 260" role="img"></svg></div>
+      <p class="wave-note" id="waveNote"></p>
+    </section>
+
+    <section>
+      <span class="eyebrow" data-t="stagesEyebrow"></span>
+      <h2 data-t="stagesTitle"></h2>
+      <p class="muted" data-t="stagesHelp"></p>
+      <div class="stages" id="stages"></div>
+    </section>
+
+    <div class="cta">
+      <p data-t="ctaText"></p>
+      <button class="btn primary" id="goSim" data-t="ctaBtn"></button>
+    </div>
+  </div>
+
+  <!-- PART 2 -->
+  <div id="sim" style="display:grid;gap:28px" hidden>
+    <section class="hero">
+      <span class="eyebrow" data-t="p2eyebrow"></span>
+      <h1 data-t="p2title"></h1>
+      <p class="lede" data-t="p2lede"></p>
+    </section>
+
+    <form class="form" id="form" autocomplete="off">
+      <div class="f c6"><span class="example" id="exampleNote" data-t="exampleNote"></span></div>
+      <div class="f c6"><label for="f-title" data-t="fTitle"></label><input id="f-title" maxlength="120"></div>
+      <div class="f c6"><label for="f-desc" data-t="fDesc"></label><textarea id="f-desc" maxlength="500"></textarea></div>
+      <div class="f c2"><label for="f-start" data-t="fStart"></label><input id="f-start" type="date"></div>
+      <div class="f c2"><label for="f-end" data-t="fEnd"></label><input id="f-end" type="date"></div>
+      <div class="f c2" style="grid-template-columns:1fr 92px;column-gap:8px">
+        <label for="f-amount" data-t="fAmount" style="grid-column:span 2"></label>
+        <input id="f-amount" type="number" min="0" step="100">
+        <select id="f-cur" aria-label="Currency"><option>MDL</option><option>USD</option><option>EUR</option></select>
+      </div>
+    </form>
+
+    <div class="summary" id="summary"></div>
+    <div class="warns" id="warns"></div>
+
+    <section>
+      <div class="actions">
+        <h2 style="margin-right:auto" data-t="tableTitle"></h2>
+        <label class="toggle"><input type="checkbox" class="chk" id="showEcif"> <span data-t="showEcif"></span></label>
+      </div>
+      <p class="muted small" data-t="tableHelp"></p>
+      <div class="tbl-wrap"><table id="tbl"></table></div>
+      <div class="actions">
+        <button class="btn" id="redate" data-t="redate"></button>
+        <button class="btn" id="resplit" data-t="resplit"></button>
+        <button class="btn" id="copy" data-t="copy"></button>
+        <button class="btn ghost" id="reset" data-t="reset"></button>
+        <span class="toast" id="toast" role="status"></span>
+      </div>
+      <textarea id="copyFallback" class="f" style="width:100%;min-height:120px" hidden aria-label="Copy"></textarea>
+    </section>
+
+    <section class="ecif" id="ecif" hidden>
+      <span class="eyebrow" style="color:var(--amber)" data-t="ecifEyebrow"></span>
+      <h2 data-t="ecifTitle"></h2>
+      <p data-t="ecifHelp"></p>
+      <div class="tbl-wrap"><table id="ecifTbl"></table></div>
+      <p class="small" id="ecifSum"></p>
+    </section>
+  </div>
+</main>
+
+<script>
+/* ---------- data from the repo (src/data/learn.ts, src/data/ecif.ts), with EN added ---------- */
+const BA_WEIGHT = [3, 5, 3, 1, 2, 5, 3, 5];
+
+const QUIZ = [
+  { yes: false,
+    ro: ["Am scris formularul de autentificare", "Este o sarcină. O poate termina o singură persoană, fără o dovadă acceptată de altcineva."],
+    en: ["I wrote the login form", "It is a task. One person can finish it, with no evidence that anyone else accepted."] },
+  { yes: false,
+    ro: ["Termenul din calendar este 12 mai", "O dată nu dovedește că etapa s-a terminat. Poți ajunge la 12 mai și să nu ai nimic semnat."],
+    en: ["The calendar deadline is 12 May", "A date does not prove the stage is finished. You can reach 12 May with nothing signed."] },
+  { yes: true,
+    ro: ["Beneficiarul a semnat cerințele", "Există o decizie și o dovadă. Abia de aici proiectarea și capitolul de cerințe pot sta în lucrare."],
+    en: ["The client signed the requirements", "There is a decision and evidence. Only from here can design and the requirements chapter stand in the thesis."] },
+  { yes: false,
+    ro: ["Am lucrat 40 de ore la baza de date", "Orele arată efort, nu rezultat. Nimeni nu a acceptat încă ceva."],
+    en: ["I spent 40 hours on the database", "Hours show effort, not a result. Nobody has accepted anything yet."] },
+  { yes: true,
+    ro: ["Raportul de testare a fost aprobat de coordonator", "O persoană cu autoritate a acceptat o dovadă. Etapa de testare este închisă."],
+    en: ["The supervisor approved the test report", "Someone with authority accepted evidence. The test stage is closed."] },
+  { yes: false,
+    ro: ["Sprintul 3 s-a încheiat", "Un sprint este o cutie de timp. Se termină și când nu a fost predat nimic."],
+    en: ["Sprint 3 has ended", "A sprint is a time box. It ends even when nothing was delivered."] },
+];
+
+const FLOW = {
+  ro: [["Sarcini", "Lucrul de zi cu zi: un ecran, o regulă, un test. Nu intră singure în lucrare ca dovadă."],
+       ["Jalon", "Punctul în care sarcinile devin o dovadă acceptată. Fără el, capitolul nu are ce apăra."],
+       ["Capitol în lucrare", "Fiecare jalon trecut devine un capitol: problemă, cerințe, proiectare, construire, test, acceptare, lansare, beneficii."]],
+  en: [["Tasks", "Day-to-day work: a screen, a rule, a test. On their own they are not evidence in the thesis."],
+       ["Milestone", "The point where tasks become accepted evidence. Without it, the chapter has nothing to defend."],
+       ["Thesis chapter", "Every milestone passed becomes a chapter: problem, requirements, design, build, test, acceptance, launch, benefits."]],
+};
+
+// The 8 stages: short name, milestone, evidence, chapter (CAPITOL in the repo), default % of budget, relative duration
+const STAGES = [
+  { pct: 5,  dur: 1, ro: ["Problemă", "Scopul aprobat de beneficiar", "Fișa proiectului, semnată", "1. Problema și scopul"],
+                     en: ["Problem", "Goal approved by the client", "Signed project brief", "1. Problem and goal"] },
+  { pct: 15, dur: 2, ro: ["Cerințe", "Cerințele semnate", "Specificația cerințelor, semnată", "2. Cerințe"],
+                     en: ["Requirements", "Requirements signed off", "Signed requirements specification", "2. Requirements"] },
+  { pct: 15, dur: 2, ro: ["Proiectare", "Proiectarea acceptată", "Arhitectura și machetele, aprobate", "3. Proiectarea soluției"],
+                     en: ["Design", "Design accepted", "Approved architecture and mockups", "3. Solution design"] },
+  { pct: 25, dur: 4, ro: ["Construire", "Versiunea funcțională predată", "Codul în depozit și un demo", "4. Implementare"],
+                     en: ["Build", "Working version delivered", "Code in the repository and a demo", "4. Implementation"] },
+  { pct: 15, dur: 2, ro: ["Testare", "Testele trecute", "Raport de testare fără erori blocante", "5. Testare"],
+                     en: ["Test", "Tests passed", "Test report with no blocking defects", "5. Testing"] },
+  { pct: 10, dur: 1, ro: ["Acceptare", "Acceptarea utilizatorilor semnată", "Procesul-verbal de acceptare", "6. Acceptarea utilizatorilor"],
+                     en: ["Acceptance", "User acceptance signed", "Signed acceptance record", "6. User acceptance"] },
+  { pct: 10, dur: 1, ro: ["Lansare", "Sistemul pus în folosință", "Aplicația publicată, utilizatori instruiți", "7. Punere în folosință"],
+                     en: ["Launch", "System in use", "App published, users trained", "7. Going live"] },
+  { pct: 5,  dur: 1, ro: ["Beneficii", "Beneficiile măsurate", "Indicatori înainte și după", "8. Concluzii și beneficii"],
+                     en: ["Benefits", "Benefits measured", "Before-and-after indicators", "8. Conclusions and benefits"] },
+];
+
+const WAVE_NOTE = {
+  ro: ["Analistul clarifică problema împreună cu beneficiarul.",
+       "Vârful: analistul scrie și negociază cerințele până la semnătură.",
+       "Analistul verifică dacă proiectarea acoperă fiecare cerință.",
+       "Cel mai puțin: programatorii construiesc, analistul răspunde la întrebări.",
+       "Analistul pregătește scenariile de test din cerințe.",
+       "Vârf: analistul conduce acceptarea cu utilizatorii.",
+       "Analistul ajută la instruire și la trecerea în folosință.",
+       "Vârf: analistul măsoară dacă problema de la început s-a rezolvat."],
+  en: ["The analyst clarifies the problem with the client.",
+       "Peak: the analyst writes and negotiates requirements until sign-off.",
+       "The analyst checks that the design covers every requirement.",
+       "Lowest: developers build, the analyst answers questions.",
+       "The analyst prepares test scenarios from the requirements.",
+       "Peak: the analyst leads acceptance with the users.",
+       "The analyst helps with training and going live.",
+       "Peak: the analyst measures whether the original problem is solved."],
+};
+
+const ECIF_TOTAL_USD = 100000;
+const ECIF_ROWS = [
+  { id: "kickoff", name: "Project Kick-off", deadline: ["2 mar. 2026", "2 Mar 2026"], usd: 10000,
+    ro: "Contractul este semnat și comanda este aprobată înainte să înceapă lucrul.",
+    en: "The contract is signed and the order approved before work starts." },
+  { id: "initial", name: "Initial Deliverable", deadline: ["30 mar. 2026", "30 Mar 2026"], usd: 25000,
+    ro: "Descoperirea este gata, mediul este pregătit, clientul confirmă startul.",
+    en: "Discovery is done, the environment is ready, the client confirms the start." },
+  { id: "mid", name: "Midpoint Milestone", deadline: ["11 mai 2026", "11 May 2026"], usd: 40000,
+    ro: "Planuri, configurări și un punct de migrare, în trimestrul fiscal.",
+    en: "Plans, configuration and a migration point, within the fiscal quarter." },
+  { id: "final", name: "Final Deliverable", deadline: ["22 iun. 2026", "22 Jun 2026"], usd: 25000,
+    ro: "Activitatea finanțată este gata și clientul semnează.",
+    en: "The funded work is done and the client signs." },
+  { id: "poe", name: "Proof of Execution", deadline: ["La fiecare termen", "At every deadline"], usd: 0,
+    ro: "Dosarul de dovezi. Fără el, tranșele de mai sus nu se plătesc.",
+    en: "The evidence file. Without it, none of the tranches above are paid." },
+];
+const ECIF_ANCHOR = ["kickoff", "initial", null, "mid", null, "final", null, null];
+const ECIF_RELEASE_AT = { kickoff: 0, initial: 1, mid: 3, final: 5 };
+const ECIF_GAP = {
+  ro: ["", "", "Planul nu are tranșă nouă. Midpoint se eliberează când dezvoltarea este trecută, în ordine.", "",
+       "Testul de calitate nu are tranșă nouă. Intră în Final Deliverable, împreună cu acceptarea.", "",
+       "Lansarea nu este plătită separat în cazul ECIF.", "Suportul de după proiect nu este plătit în cazul ECIF."],
+  en: ["", "", "Design has no tranche of its own. Midpoint is released when build is passed, in order.", "",
+       "Quality testing has no tranche of its own. It is part of Final Deliverable, together with acceptance.", "",
+       "Launch is not paid separately under ECIF.", "Post-project support is not paid under ECIF."],
+};
+
+/* ---------- UI copy ---------- */
+const T = {
+  ro: {
+    brand: "Jaloane de proiect", tabLearn: "1 · Lecție", tabSim: "2 · Simulare",
+    p1eyebrow: "Partea 1 · Lecție", p1title: "Ce este un jalon și cum îl recunoști",
+    p1lede: "Pentru studenții de Informatică aplicată. Zece minute de citit, apoi construiești jaloanele proiectului tău în Partea 2.",
+    definition: "<b>Jalonul</b> este momentul în care o etapă se încheie cu o decizie și o dovadă acceptată de altcineva: o semnătură, un proces-verbal, un raport aprobat. Nu are durată și nu înseamnă muncă. Este o poartă.",
+    quizEyebrow: "Exercițiu", quizTitle: "Jalon sau nu?", quizHelp: "Alege răspunsul pentru fiecare afirmație. Explicația apare imediat.",
+    isMs: "Este jalon", notMs: "Nu este jalon", correct: "Corect", wrong: "Greșit",
+    score: (a, n, t) => `Ai răspuns la ${a} din ${t}. Corecte: ${n}.`,
+    flowEyebrow: "Drumul", flowTitle: "De la sarcini la capitolul din lucrare",
+    waveEyebrow: "Unda analistului", waveTitle: "Cât lucrează analistul în fiecare etapă",
+    waveHelp: "Efortul analistului de business, de la 1 la 5. Atinge o etapă pentru explicație.",
+    waveAxis: "Efort", stagesEyebrow: "Schema", stagesTitle: "Cele 8 etape, fiecare cu jalonul ei",
+    stagesHelp: "Fiecare etapă se închide cu un jalon. Dovada jalonului devine materialul capitolului.",
+    msLabel: "Jalon", evLabel: "Dovadă",
+    ctaText: "Ai înțeles schema? Treci la simulare și pune jaloanele pe proiectul tău.", ctaBtn: "Deschide simularea",
+    p2eyebrow: "Partea 2 · Simulare", p2title: "Jaloanele proiectului tău",
+    p2lede: "Completează titlul, descrierea, termenul și suma. Tabelul se calculează singur. Bifează etapele trecute ca să vezi ce sumă se eliberează.",
+    exampleNote: "Exemplu completat. Înlocuiește cu proiectul tău. Datele rămân doar în browserul tău.",
+    fTitle: "Titlul proiectului", fDesc: "Descriere scurtă", fStart: "Început", fEnd: "Termen final", fAmount: "Suma totală",
+    tableTitle: "Tabelul etapelor", showEcif: "Compară cu ECIF",
+    tableHelp: "Poți schimba procentul și termenul fiecărui jalon. Bifa înseamnă că dovada a fost acceptată.",
+    thStage: "Etapă", thMs: "Jalon și dovadă", thDate: "Termen", thPct: "%", thAmt: "Sumă", thDone: "Trecut", thCh: "Capitol", thEcif: "ECIF",
+    total: "Total", redate: "Recalculează termenele", resplit: "Împarte suma implicit", copy: "Copiază tabelul", reset: "Golește formularul",
+    copied: "Tabelul a fost copiat.", copyFail: "Copierea nu a mers. Selectează textul de mai jos.",
+    sPassed: "Jaloane trecute", sReleased: "Sumă eliberată", sNext: "Următorul jalon", sDays: "Zile până la termen", none: "Toate trecute",
+    wPct: p => `Procentele însumează ${p}%, nu 100%. Corectează coloana %.`,
+    wOrder: n => `Termenul jalonului ${n} este înaintea celui anterior.`,
+    wEnd: n => `Termenul jalonului ${n} trece de termenul final.`,
+    wDates: "Termenul final trebuie să fie după data de început.",
+    ecifEyebrow: "Exemplul ECIF · bani de firmă, nu ai tăi",
+    ecifTitle: "Cum plătește un finanțator real",
+    ecifHelp: "ECIF este un program de finanțare pentru firme. Sumele și termenele de aici sunt ale unei firme, nu ale studentului. Observă că nu fiecare etapă are tranșă, iar tranșele se eliberează doar în ordine.",
+    ecifRow: "Tranșă", ecifDesc: "Condiție", ecifStatus: "Stare", paid: "Eliberat", waiting: "În așteptare", evidence: "Dovezi",
+    ecifSum: (a, t) => `Cu bifele tale, ECIF ar fi eliberat ${a} din ${t}.`,
+    anchor: "Tranșă", gapLabel: "Fără tranșă",
+    exTitle: "Aplicație de rezervări pentru biblioteca facultății",
+    exDesc: "Studenții rezervă cărți și locuri în sala de lectură de pe telefon. Bibliotecara confirmă din panoul de administrare.",
+  },
+  en: {
+    brand: "Project milestones", tabLearn: "1 · Lesson", tabSim: "2 · Simulation",
+    p1eyebrow: "Part 1 · Lesson", p1title: "What a milestone is and how to recognise one",
+    p1lede: "For Applied Informatics students. Ten minutes of reading, then you build the milestones of your own project in Part 2.",
+    definition: "A <b>milestone</b> is the moment a stage ends with a decision and evidence that someone else accepts: a signature, a record, an approved report. It has no duration and is not work. It is a gate.",
+    quizEyebrow: "Exercise", quizTitle: "Milestone or not?", quizHelp: "Pick an answer for each statement. The explanation appears straight away.",
+    isMs: "Milestone", notMs: "Not a milestone", correct: "Correct", wrong: "Wrong",
+    score: (a, n, t) => `You answered ${a} of ${t}. Correct: ${n}.`,
+    flowEyebrow: "The path", flowTitle: "From tasks to a thesis chapter",
+    waveEyebrow: "The analyst wave", waveTitle: "How much the analyst works in each stage",
+    waveHelp: "Business analyst effort, from 1 to 5. Tap a stage for the explanation.",
+    waveAxis: "Effort", stagesEyebrow: "The scheme", stagesTitle: "The 8 stages, each with its milestone",
+    stagesHelp: "Each stage closes with a milestone. The milestone's evidence becomes the material for the chapter.",
+    msLabel: "Milestone", evLabel: "Evidence",
+    ctaText: "Got the scheme? Move to the simulation and put milestones on your own project.", ctaBtn: "Open the simulation",
+    p2eyebrow: "Part 2 · Simulation", p2title: "Your project's milestones",
+    p2lede: "Fill in the title, description, deadline and amount. The table works itself out. Tick the stages you have passed to see how much is released.",
+    exampleNote: "Example filled in. Replace it with your project. Your data stays in your browser only.",
+    fTitle: "Project title", fDesc: "Short description", fStart: "Start", fEnd: "Final deadline", fAmount: "Total amount",
+    tableTitle: "Stage table", showEcif: "Compare with ECIF",
+    tableHelp: "You can change each milestone's percentage and deadline. A tick means the evidence was accepted.",
+    thStage: "Stage", thMs: "Milestone and evidence", thDate: "Deadline", thPct: "%", thAmt: "Amount", thDone: "Passed", thCh: "Chapter", thEcif: "ECIF",
+    total: "Total", redate: "Recalculate deadlines", resplit: "Default split", copy: "Copy table", reset: "Clear the form",
+    copied: "Table copied.", copyFail: "Copy did not work. Select the text below.",
+    sPassed: "Milestones passed", sReleased: "Amount released", sNext: "Next milestone", sDays: "Days to deadline", none: "All passed",
+    wPct: p => `The percentages add up to ${p}%, not 100%. Fix the % column.`,
+    wOrder: n => `Milestone ${n}'s deadline is before the previous one.`,
+    wEnd: n => `Milestone ${n}'s deadline is after the final deadline.`,
+    wDates: "The final deadline must be after the start date.",
+    ecifEyebrow: "The ECIF example · company money, not yours",
+    ecifTitle: "How a real funder pays",
+    ecifHelp: "ECIF is a funding programme for companies. The amounts and deadlines here belong to a company, not to the student. Notice that not every stage has a tranche, and tranches are released only in order.",
+    ecifRow: "Tranche", ecifDesc: "Condition", ecifStatus: "Status", paid: "Released", waiting: "Waiting", evidence: "Evidence",
+    ecifSum: (a, t) => `With your ticks, ECIF would have released ${a} of ${t}.`,
+    anchor: "Tranche", gapLabel: "No tranche",
+    exTitle: "Booking app for the faculty library",
+    exDesc: "Students book books and reading-room seats from their phone. The librarian confirms from an admin panel.",
+  },
+};
+
+/* ---------- state ---------- */
+const KEY = "jaloane-sim-v1";
+const LANG_KEY = "jaloane-lang";
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+
+function spreadDates(start, end) {
+  const s = parse(start), e = parse(end);
+  const span = Math.max(1, Math.round((e - s) / 86400000));
+  const totalDur = STAGES.reduce((a, b) => a + b.dur, 0);
+  let acc = 0;
+  return STAGES.map(st => { acc += st.dur; return iso(addDays(s, Math.round(span * acc / totalDur))); });
+}
+
+function exampleState(lang) {
+  const start = iso(new Date());
+  const end = iso(addDays(new Date(), 16 * 7));
+  return {
+    example: true, title: T[lang].exTitle, desc: T[lang].exDesc, start, end, amount: 40000, cur: "MDL",
+    rows: spreadDates(start, end).map((date, i) => ({ pct: STAGES[i].pct, date, done: i < 2 })),
+  };
+}
+
+let lang = store.get(LANG_KEY) === "en" ? "en" : "ro";
+let tab = location.hash === "#simulare" || location.hash === "#simulation" ? "sim" : "learn";
+let S;
+try { S = JSON.parse(store.get(KEY)); } catch { S = null; }
+if (!S || !Array.isArray(S.rows) || S.rows.length !== 8) S = exampleState(lang);
+const answers = {};
+let waveSel = 1;
+let showEcif = store.get("jaloane-ecif") === "1";
+
+const save = () => store.set(KEY, JSON.stringify(S));
+const t = k => T[lang][k];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const money = (v, cur) => new Intl.NumberFormat(lang === "ro" ? "ro-RO" : "en-GB", { maximumFractionDigits: 0 }).format(Math.round(v)) + " " + cur;
+const fmtDate = s => s ? new Intl.DateTimeFormat(lang === "ro" ? "ro-RO" : "en-GB", { day: "numeric", month: "short", year: "numeric" }).format(parse(s)) : "—";
+
+/* ---------- render: static copy ---------- */
+function renderCopy() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = t(el.dataset.t); });
+  $("lang-ro").setAttribute("aria-pressed", lang === "ro");
+  $("lang-en").setAttribute("aria-pressed", lang === "en");
+  $("tab-learn").setAttribute("aria-pressed", tab === "learn");
+  $("tab-sim").setAttribute("aria-pressed", tab === "sim");
+  $("learn").hidden = tab !== "learn";
+  $("sim").hidden = tab !== "sim";
+}
+
+/* ---------- render: lesson ---------- */
+function renderQuiz() {
+  $("quiz").innerHTML = QUIZ.map((q, i) => {
+    const [label, why] = q[lang];
+    const a = answers[i];
+    let verdict = "";
+    if (a !== undefined) {
+      const ok = a === q.yes;
+      verdict = `<div class="verdict"><span class="pill ${ok ? "yes" : "bad"}">${ok ? t("correct") : t("wrong")} · ${q.yes ? t("isMs") : t("notMs")}</span><span>${esc(why)}</span></div>`;
+    }
+    return `<div class="q"><span class="q-label">${esc(label)}</span>
+      <div class="q-btns">
+        <button class="btn${a === true ? " primary" : ""}" data-q="${i}" data-a="1">${t("isMs")}</button>
+        <button class="btn${a === false ? " primary" : ""}" data-q="${i}" data-a="0">${t("notMs")}</button>
+      </div>${verdict}</div>`;
+  }).join("");
+  const keys = Object.keys(answers);
+  $("score").textContent = keys.length ? T[lang].score(keys.length, keys.filter(k => answers[k] === QUIZ[k].yes).length, QUIZ.length) : "";
+}
+
+function renderFlow() {
+  const f = FLOW[lang];
+  $("flow").innerHTML = f.map(([h, p], i) =>
+    `<div class="step${i === 1 ? " key" : ""}"><h3>${esc(h)}</h3><p class="small">${esc(p)}</p></div>` + (i < 2 ? `<span class="arrow" aria-hidden="true">→</span>` : "")
+  ).join("");
+}
+
+function renderWave() {
+  const W = 800, H = 260, L = 50, R = 20, Tp = 20, B = 50;
+  const x = i => L + (W - L - R) * (i + 0.5) / 8;
+  const y = v => Tp + (H - Tp - B) * (1 - v / 5);
+  const css = getComputedStyle(document.documentElement);
+  const pts = BA_WEIGHT.map((v, i) => [x(i), y(v)]);
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], mx = (x0 + x1) / 2;
+    d += ` C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+  }
+  const area = d + ` L${pts[7][0]},${y(0)} L${pts[0][0]},${y(0)} Z`;
+  let g = "";
+  for (let v = 0; v <= 5; v++) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L - 10}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="var(--muted)">${v}</text>`;
+  g += `<text x="14" y="${(Tp + H - B) / 2}" transform="rotate(-90 14 ${(Tp + H - B) / 2})" text-anchor="middle" font-size="12" fill="var(--muted)">${t("waveAxis")}</text>`;
+  let cols = "";
+  STAGES.forEach((st, i) => {
+    const sel = i === waveSel;
+    cols += `<g class="wcol" data-w="${i}" tabindex="0" role="button" aria-label="${esc(st[lang][0])}: ${BA_WEIGHT[i]}" style="cursor:pointer">
+      <rect x="${x(i) - 44}" y="${Tp}" width="88" height="${H - Tp - B + 40}" fill="${sel ? "var(--teal-soft)" : "transparent"}" rx="6"/>
+      <circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="${sel ? 7 : 5}" fill="${sel ? "var(--teal)" : "var(--card)"}" stroke="var(--teal)" stroke-width="2.5"/>
+      <text x="${x(i)}" y="${pts[i][1] - 13}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">${BA_WEIGHT[i]}</text>
+      <text x="${x(i)}" y="${H - B + 22}" text-anchor="middle" font-size="12.5" fill="${sel ? "var(--teal)" : "var(--muted)"}" font-weight="${sel ? 700 : 400}">${i + 1}. ${esc(st[lang][0])}</text>
+    </g>`;
+  });
+  $("wave").innerHTML = g + `<path d="${area}" fill="var(--teal)" fill-opacity=".12"/><path d="${d}" fill="none" stroke="var(--teal)" stroke-width="2.5"/>` + cols;
+  $("wave").setAttribute("aria-label", t("waveTitle"));
+  $("waveNote").innerHTML = `<b>${waveSel + 1}. ${esc(STAGES[waveSel][lang][0])} · ${BA_WEIGHT[waveSel]}/5.</b> ${esc(WAVE_NOTE[lang][waveSel])}`;
+}
+
+function renderStages() {
+  $("stages").innerHTML = STAGES.map((st, i) => {
+    const [name, ms, ev, ch] = st[lang];
+    return `<div class="stage"><span class="n">${i + 1}</span><h3>${esc(name)}</h3>
+      <span class="ms">${t("msLabel")}: ${esc(ms)}</span>
+      <span class="ev">${t("evLabel")}: ${esc(ev)}</span>
+      <span class="ch">→ ${esc(ch)}</span></div>`;
+  }).join("");
+}
+
+/* ---------- render: simulator ---------- */
+function fillForm() {
+  $("f-title").value = S.title; $("f-desc").value = S.desc;
+  $("f-start").value = S.start; $("f-end").value = S.end;
+  $("f-amount").value = S.amount; $("f-cur").value = S.cur;
+  $("exampleNote").hidden = !S.example;
+}
+
+function problems() {
+  const out = [], bad = new Set();
+  const sum = S.rows.reduce((a, r) => a + (Number(r.pct) || 0), 0);
+  if (Math.abs(sum - 100) > 0.001) out.push(T[lang].wPct(Math.round(sum * 10) / 10));
+  if (S.start && S.end && S.end <= S.start) out.push(t("wDates"));
+  S.rows.forEach((r, i) => {
+    if (i > 0 && r.date && S.rows[i - 1].date && r.date < S.rows[i - 1].date) { out.push(T[lang].wOrder(i + 1)); bad.add(i); }
+    if (r.date && S.end && r.date > S.end) { out.push(T[lang].wEnd(i + 1)); bad.add(i); }
+  });
+  return { out, bad, sum };
+}
+
+function renderTable() {
+  const { out, bad, sum } = problems();
+  $("warns").innerHTML = out.map(w => `<div class="warn-line">${esc(w)}</div>`).join("");
+  const amt = Number(S.amount) || 0;
+  const head = `<thead><tr><th>${t("thStage")}</th><th>${t("thMs")}</th><th>${t("thDate")}</th><th class="num">${t("thPct")}</th><th class="num">${t("thAmt")}</th><th>${t("thDone")}</th><th>${t("thCh")}</th>${showEcif ? `<th>${t("thEcif")}</th>` : ""}</tr></thead>`;
+  const body = S.rows.map((r, i) => {
+    const [name, ms, ev, ch] = STAGES[i][lang];
+    let ecif = "";
+    if (showEcif) {
+      const a = ECIF_ANCHOR[i];
+      const row = a && ECIF_ROWS.find(e => e.id === a);
+      ecif = `<td class="ecif-cell">${row ? `<b>${t("anchor")}:</b> ${esc(row.name)}` : `<b>${t("gapLabel")}.</b> ${esc(ECIF_GAP[lang][i])}`}</td>`;
+    }
+    return `<tr class="${r.done ? "done" : ""}">
+      <td><b>${i + 1}. ${esc(name)}</b></td>
+      <td><div class="ms-name">${esc(ms)}</div><div class="ev-name">${esc(ev)}</div></td>
+      <td><input type="date" id="d-${i}" data-row="${i}" data-k="date" value="${esc(r.date)}" class="${bad.has(i) ? "warn" : ""}" aria-label="${t("thDate")} ${i + 1}"></td>
+      <td class="num"><input type="number" id="p-${i}" data-row="${i}" data-k="pct" min="0" max="100" step="1" value="${esc(r.pct)}" aria-label="% ${i + 1}"></td>
+      <td class="num" id="a-${i}">${money(amt * (Number(r.pct) || 0) / 100, S.cur)}</td>
+      <td><input type="checkbox" class="chk" id="c-${i}" data-row="${i}" data-k="done" ${r.done ? "checked" : ""} aria-label="${t("thDone")} ${i + 1}"></td>
+      <td class="small">${esc(ch)}</td>${ecif}</tr>`;
+  }).join("");
+  const foot = `<tfoot><tr><td colspan="3">${t("total")}</td><td class="num">${Math.round(sum * 10) / 10}%</td><td class="num">${money(amt * sum / 100, S.cur)}</td><td colspan="${showEcif ? 3 : 2}"></td></tr></tfoot>`;
+  $("tbl").innerHTML = head + "<tbody>" + body + "</tbody>" + foot;
+  renderSummary();
+  renderEcif();
+}
+
+function renderSummary() {
+  const amt = Number(S.amount) || 0;
+  const passed = S.rows.filter(r => r.done).length;
+  const released = S.rows.reduce((a, r) => a + (r.done ? amt * (Number(r.pct) || 0) / 100 : 0), 0);
+  const nextI = S.rows.findIndex(r => !r.done);
+  let days = "—";
+  if (nextI >= 0 && S.rows[nextI].date) {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    days = String(Math.round((parse(S.rows[nextI].date) - today) / 86400000));
+  }
+  const pctRel = amt ? Math.round(released / amt * 100) : 0;
+  $("summary").innerHTML = `
+    <div class="tile"><span class="k">${t("sPassed")}</span><span class="v">${passed} / 8</span><div class="meter"><i style="width:${passed / 8 * 100}%"></i></div></div>
+    <div class="tile"><span class="k">${t("sReleased")}</span><span class="v">${money(released, S.cur)}</span><div class="meter"><i style="width:${Math.min(100, pctRel)}%"></i></div></div>
+    <div class="tile"><span class="k">${t("sNext")}</span><span class="v" style="font-size:1.05rem;font-family:var(--font-sans);font-weight:700">${nextI >= 0 ? `${nextI + 1}. ${esc(STAGES[nextI][lang][1])}` : t("none")}</span><span class="small muted">${nextI >= 0 ? fmtDate(S.rows[nextI].date) : ""}</span></div>
+    <div class="tile"><span class="k">${t("sDays")}</span><span class="v">${days}</span></div>`;
+}
+
+function ecifReleased() {
+  // A tranche is released when its anchor stage and every stage before it are passed (in order).
+  let inOrder = 0;
+  while (inOrder < 8 && S.rows[inOrder].done) inOrder++;
+  return id => id in ECIF_RELEASE_AT && ECIF_RELEASE_AT[id] < inOrder;
+}
+
+function renderEcif() {
+  $("ecif").hidden = !showEcif;
+  $("showEcif").checked = showEcif;
+  if (!showEcif) return;
+  const isPaid = ecifReleased();
+  const fmt = v => new Intl.NumberFormat(lang === "ro" ? "ro-RO" : "en-GB").format(v) + " USD";
+  let paid = 0;
+  const rows = ECIF_ROWS.map(r => {
+    const p = isPaid(r.id); if (p) paid += r.usd;
+    const status = r.id === "poe" ? `<span class="pill no">${t("evidence")}</span>` : `<span class="pill ${p ? "yes" : "no"}">${p ? t("paid") : t("waiting")}</span>`;
+    return `<tr class="${p ? "paid" : ""}"><td><b>${esc(r.name)}</b></td><td>${esc(r[lang])}</td><td>${esc(r.deadline[lang === "ro" ? 0 : 1])}</td><td class="num">${fmt(r.usd)}</td><td>${status}</td></tr>`;
+  }).join("");
+  $("ecifTbl").innerHTML = `<thead><tr><th>${t("ecifRow")}</th><th>${t("ecifDesc")}</th><th>${t("thDate")}</th><th class="num">USD</th><th>${t("ecifStatus")}</th></tr></thead><tbody>${rows}</tbody>`;
+  $("ecifSum").textContent = T[lang].ecifSum(fmt(paid), fmt(ECIF_TOTAL_USD));
+}
+
+function renderAll() {
+  renderCopy(); renderQuiz(); renderFlow(); renderWave(); renderStages(); fillForm(); renderTable();
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const l = e.target.closest("[data-lang]");
+  if (l) { lang = l.dataset.lang; store.set(LANG_KEY, lang); if (S.example) { S.title = t("exTitle"); S.desc = t("exDesc"); } renderAll(); return; }
+  const tb = e.target.closest("[data-tab]");
+  if (tb) { tab = tb.dataset.tab; renderCopy(); window.scrollTo(0, 0); return; }
+  const q = e.target.closest("[data-q]");
+  if (q) { answers[q.dataset.q] = q.dataset.a === "1"; renderQuiz(); return; }
+  const w = e.target.closest("[data-w]");
+  if (w) { waveSel = Number(w.dataset.w); renderWave(); return; }
+});
+$("wave").addEventListener("keydown", e => {
+  const w = e.target.closest("[data-w]");
+  if (w && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); waveSel = Number(w.dataset.w); renderWave(); $("wave").querySelector(`[data-w="${waveSel}"]`).focus(); }
+});
+$("goSim").addEventListener("click", () => { tab = "sim"; renderCopy(); window.scrollTo(0, 0); });
+
+$("form").addEventListener("submit", e => e.preventDefault());
+$("form").addEventListener("input", e => {
+  const map = { "f-title": "title", "f-desc": "desc", "f-start": "start", "f-end": "end", "f-amount": "amount", "f-cur": "cur" };
+  const k = map[e.target.id]; if (!k) return;
+  S[k] = k === "amount" ? Math.max(0, Number(e.target.value) || 0) : e.target.value;
+  if (S.example && (k === "title" || k === "desc")) { S.example = false; $("exampleNote").hidden = true; }
+  if ((k === "start" || k === "end") && S.start && S.end && S.end > S.start) S.rows.forEach((r, i) => r.date = spreadDates(S.start, S.end)[i]);
+  save(); renderTable();
+});
+$("form").addEventListener("change", e => { if (e.target.id === "f-cur") { S.cur = e.target.value; save(); renderTable(); } });
+
+$("tbl").addEventListener("change", e => {
+  const el = e.target; if (!el.dataset.row) return;
+  const r = S.rows[Number(el.dataset.row)];
+  if (el.dataset.k === "done") r.done = el.checked;
+  else if (el.dataset.k === "pct") r.pct = Math.max(0, Math.min(100, Number(el.value) || 0));
+  else r.date = el.value;
+  save(); renderTable();
+  const again = $(el.id); if (again && el.dataset.k !== "done") again.focus();
+});
+
+$("showEcif").addEventListener("change", e => { showEcif = e.target.checked; store.set("jaloane-ecif", showEcif ? "1" : "0"); renderTable(); });
+$("redate").addEventListener("click", () => { if (S.start && S.end && S.end > S.start) { spreadDates(S.start, S.end).forEach((d, i) => S.rows[i].date = d); save(); renderTable(); } });
+$("resplit").addEventListener("click", () => { S.rows.forEach((r, i) => r.pct = STAGES[i].pct); save(); renderTable(); });
+$("reset").addEventListener("click", () => {
+  const start = iso(new Date()), end = iso(addDays(new Date(), 16 * 7));
+  S = { example: false, title: "", desc: "", start, end, amount: 0, cur: S.cur,
+        rows: spreadDates(start, end).map((date, i) => ({ pct: STAGES[i].pct, date, done: false })) };
+  save(); fillForm(); renderTable(); $("f-title").focus();
+});
+
+function tableText() {
+  const amt = Number(S.amount) || 0;
+  const lines = [S.title || t("p2title"), S.desc, `${fmtDate(S.start)} → ${fmtDate(S.end)} · ${money(amt, S.cur)}`, "",
+    [t("thStage"), t("msLabel"), t("evLabel"), t("thDate"), "%", t("thAmt"), t("thDone"), t("thCh")].join("\t")];
+  S.rows.forEach((r, i) => {
+    const [name, ms, ev, ch] = STAGES[i][lang];
+    lines.push([`${i + 1}. ${name}`, ms, ev, fmtDate(r.date), r.pct, money(amt * r.pct / 100, S.cur), r.done ? "✓" : "", ch].join("\t"));
+  });
+  return lines.join("\n");
+}
+$("copy").addEventListener("click", () => {
+  const text = tableText(), fb = $("copyFallback");
+  const fail = () => { fb.hidden = false; fb.value = text; fb.focus(); fb.select(); $("toast").textContent = t("copyFail"); };
+  try {
+    navigator.clipboard.writeText(text).then(() => { fb.hidden = true; $("toast").textContent = t("copied"); setTimeout(() => $("toast").textContent = "", 2500); }, fail);
+  } catch { fail(); }
+});
+
+renderAll();
+</script>
+</body>
+</html>
