@@ -1,0 +1,1 @@
+export const BA_WEIGHT = [3, 5, 3, 1, 2, 5, 3, 5];
