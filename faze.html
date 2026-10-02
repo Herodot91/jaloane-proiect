@@ -36,6 +36,9 @@
   }
 
   html { height: 100%; }
+  html.embed { height: auto; }
+  .embed body { min-height: 0; padding: 0; background: transparent; }
+  .embed .back, .embed .hint { display: none; }
   body {
     min-height: 100%;
     margin: 0;
@@ -320,6 +323,8 @@
 </div>
 
 <script>
+  if (window.top !== window.self) document.documentElement.classList.add("embed");
+
   const slides = [
     {
       en: { short: "Requirements", title: "Requirements Engineering", body: "Gathering and defining the business analysis requirements for the interactive software environment.", deliverables: ["Stakeholder interview summary", "Business requirements document (BRD)", "Use cases and user stories", "Prioritised requirements list (MoSCoW)"] },
@@ -443,6 +448,10 @@
     else if (e.key === "End") go(slides.length - 1);
   });
   window.addEventListener("resize", () => render(false));
+  // The lesson page shares this key, so a language switch there updates this page too.
+  window.addEventListener("storage", e => {
+    if (e.key === "jaloane-lang" && ui[e.newValue] && e.newValue !== lang) { lang = e.newValue; render(false); }
+  });
 
   render(false);
 </script>

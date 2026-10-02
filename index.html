@@ -102,6 +102,10 @@ section { display: grid; gap: 16px; }
 .stage .ev { font-size: .9rem; color: var(--muted); }
 .stage .ch { font-size: .82rem; color: var(--amber); font-weight: 600; }
 
+.faze-head { display: flex; gap: 12px; align-items: end; justify-content: space-between; flex-wrap: wrap; }
+.faze-head .hero { flex: 1 1 420px; min-width: 0; }
+a.btn { text-decoration: none; color: var(--ink); display: inline-block; }
+.faze-frame { width: 100%; height: 900px; border: 0; display: block; border-radius: 14px; background: transparent; }
 .cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 18px; border: 1px dashed var(--teal); border-radius: 12px; }
 
 /* simulator */
@@ -161,6 +165,7 @@ tr.paid td { background: var(--teal-soft); }
     <div class="seg" role="group" aria-label="Part">
       <button id="tab-learn" data-tab="learn" data-t="tabLearn"></button>
       <button id="tab-sim" data-tab="sim" data-t="tabSim"></button>
+      <button id="tab-faze" data-tab="faze" data-t="tabFaze"></button>
     </div>
     <div class="seg" role="group" aria-label="Language">
       <button id="lang-ro" data-lang="ro">RO</button>
@@ -263,6 +268,19 @@ tr.paid td { background: var(--teal-soft); }
       <div class="tbl-wrap"><table id="ecifTbl"></table></div>
       <p class="small" id="ecifSum"></p>
     </section>
+  </div>
+
+  <!-- PART 3 -->
+  <div id="faze" style="display:grid;gap:20px" hidden>
+    <div class="faze-head">
+      <section class="hero">
+        <span class="eyebrow" data-t="p3eyebrow"></span>
+        <h1 data-t="p3title"></h1>
+        <p class="lede" data-t="p3lede"></p>
+      </section>
+      <a class="btn" href="faze.html" target="_blank" rel="noopener" data-t="p3open"></a>
+    </div>
+    <iframe class="faze-frame" id="fazeFrame" title="Faze" loading="lazy"></iframe>
   </div>
 </main>
 
@@ -371,7 +389,8 @@ const ECIF_GAP = {
 /* ---------- UI copy ---------- */
 const T = {
   ro: {
-    brand: "Jaloane de proiect", tabLearn: "1 · Lecție", tabSim: "2 · Simulare",
+    brand: "Jaloane de proiect", tabLearn: "1 · Lecție", tabSim: "2 · Simulare", tabFaze: "3 · Faze",
+    p3eyebrow: "Partea 3 · Faze", p3title: "Fazele proiectului, livrabile și reflecție", p3lede: "Parcurge cele 4 faze, vezi ce se predă la fiecare și răspunde la întrebarea de reflecție. Notițele tale rămân doar în browserul tău.", p3open: "Deschide într-o fereastră nouă ↗",
     p1eyebrow: "Partea 1 · Lecție", p1title: "Ce este un jalon și cum îl recunoști",
     p1lede: "Pentru studenții de Informatică aplicată. Zece minute de citit, apoi construiești jaloanele proiectului tău în Partea 2.",
     definition: "<b>Jalonul</b> este momentul în care o etapă se încheie cu o decizie și o dovadă acceptată de altcineva: o semnătură, un proces-verbal, un raport aprobat. Nu are durată și nu înseamnă muncă. Este o poartă.",
@@ -409,7 +428,8 @@ const T = {
     exDesc: "Studenții rezervă cărți și locuri în sala de lectură de pe telefon. Bibliotecara confirmă din panoul de administrare.",
   },
   en: {
-    brand: "Project milestones", tabLearn: "1 · Lesson", tabSim: "2 · Simulation",
+    brand: "Project milestones", tabLearn: "1 · Lesson", tabSim: "2 · Simulation", tabFaze: "3 · Phases",
+    p3eyebrow: "Part 3 · Phases", p3title: "Project phases, deliverables and reflection", p3lede: "Walk through the 4 phases, see what is handed over in each, and answer the reflection question. Your notes stay only in your browser.", p3open: "Open in a new window ↗",
     p1eyebrow: "Part 1 · Lesson", p1title: "What a milestone is and how to recognise one",
     p1lede: "For Applied Informatics students. Ten minutes of reading, then you build the milestones of your own project in Part 2.",
     definition: "A <b>milestone</b> is the moment a stage ends with a decision and evidence that someone else accepts: a signature, a record, an approved report. It has no duration and is not work. It is a gate.",
@@ -499,7 +519,8 @@ ECIF_GAP.fr = ["", "", "La conception n'a pas de tranche propre. Midpoint est ve
   "La mise en service n'est pas payée séparément dans ECIF.", "Le support après projet n'est pas payé dans ECIF."];
 
 T.fr = {
-  brand: "Jalons de projet", tabLearn: "1 · Leçon", tabSim: "2 · Simulation",
+  brand: "Jalons de projet", tabLearn: "1 · Leçon", tabSim: "2 · Simulation", tabFaze: "3 · Phases",
+  p3eyebrow: "Partie 3 · Phases", p3title: "Phases du projet, livrables et réflexion", p3lede: "Parcourez les 4 phases, voyez ce qui est livré à chacune et répondez à la question de réflexion. Vos notes restent uniquement dans votre navigateur.", p3open: "Ouvrir dans une nouvelle fenêtre ↗",
   p1eyebrow: "Partie 1 · Leçon", p1title: "Ce qu'est un jalon et comment le reconnaître",
   p1lede: "Pour les étudiants en Informatique appliquée. Dix minutes de lecture, puis vous construisez les jalons de votre projet dans la Partie 2.",
   definition: "Un <b>jalon</b> est le moment où une étape se termine par une décision et une preuve acceptée par quelqu'un d'autre : une signature, un procès-verbal, un rapport approuvé. Il n'a pas de durée et ce n'est pas du travail. C'est une porte.",
@@ -569,7 +590,7 @@ function exampleState(lang) {
 const LANGS = ["ro", "en", "fr"];
 const LOCALE = { ro: "ro-RO", en: "en-GB", fr: "fr-FR" };
 let lang = LANGS.includes(store.get(LANG_KEY)) ? store.get(LANG_KEY) : "ro";
-let tab = location.hash === "#simulare" || location.hash === "#simulation" ? "sim" : "learn";
+let tab = location.hash === "#simulare" || location.hash === "#simulation" ? "sim" : location.hash === "#faze" || location.hash === "#phases" ? "faze" : "learn";
 let S;
 try { S = JSON.parse(store.get(KEY)); } catch { S = null; }
 if (!S || !Array.isArray(S.rows) || S.rows.length !== 8) S = exampleState(lang);
@@ -594,6 +615,25 @@ function renderCopy() {
   $("tab-sim").setAttribute("aria-pressed", tab === "sim");
   $("learn").hidden = tab !== "learn";
   $("sim").hidden = tab !== "sim";
+  $("tab-faze").setAttribute("aria-pressed", tab === "faze");
+  $("faze").hidden = tab !== "faze";
+  if (tab === "faze") loadFaze();
+}
+
+/* ---------- part 3: phases page, embedded and sized to its content ---------- */
+function loadFaze() {
+  const fr = $("fazeFrame");
+  if (fr.dataset.loaded) return;
+  fr.dataset.loaded = "1";
+  fr.addEventListener("load", () => {
+    try {
+      const doc = fr.contentDocument;
+      const fit = () => { fr.style.height = doc.documentElement.scrollHeight + "px"; };
+      new ResizeObserver(fit).observe(doc.body);
+      fit();
+    } catch {}
+  });
+  fr.src = "faze.html";
 }
 
 /* ---------- render: lesson ---------- */
