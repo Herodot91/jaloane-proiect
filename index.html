@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Lecție interactivă despre jaloanele de proiect software, cu simulare. RO și EN.">
+<meta name="description" content="Lecție interactivă despre jaloanele de proiect software, cu simulare. RO, EN și FR.">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>Jaloane de proiect</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,6 +165,7 @@ tr.paid td { background: var(--teal-soft); }
     <div class="seg" role="group" aria-label="Language">
       <button id="lang-ro" data-lang="ro">RO</button>
       <button id="lang-en" data-lang="en">EN</button>
+      <button id="lang-fr" data-lang="fr">FR</button>
     </div>
   </div>
 </header>
@@ -447,6 +448,95 @@ const T = {
   },
 };
 
+/* ---------- French ---------- */
+[
+  ["J'ai écrit le formulaire de connexion", "C'est une tâche. Une seule personne peut la terminer, sans preuve acceptée par quelqu'un d'autre."],
+  ["L'échéance du calendrier est le 12 mai", "Une date ne prouve pas que l'étape est terminée. On peut arriver au 12 mai sans rien de signé."],
+  ["Le client a signé les exigences", "Il y a une décision et une preuve. C'est seulement à partir d'ici que la conception et le chapitre des exigences tiennent dans le mémoire."],
+  ["J'ai passé 40 heures sur la base de données", "Les heures montrent l'effort, pas un résultat. Personne n'a encore rien accepté."],
+  ["Le coordinateur a approuvé le rapport de tests", "Une personne qui a l'autorité a accepté une preuve. L'étape de test est close."],
+  ["Le sprint 3 est terminé", "Un sprint est une boîte de temps. Il se termine même quand rien n'a été livré."],
+].forEach((q, i) => { QUIZ[i].fr = q; });
+
+FLOW.fr = [
+  ["Tâches", "Le travail de tous les jours : un écran, une règle, un test. Seules, elles ne servent pas de preuve dans le mémoire."],
+  ["Jalon", "Le moment où les tâches deviennent une preuve acceptée. Sans lui, le chapitre n'a rien à défendre."],
+  ["Chapitre du mémoire", "Chaque jalon franchi devient un chapitre : problème, exigences, conception, réalisation, test, recette, mise en service, bénéfices."],
+];
+
+[
+  ["Problème", "Objectif approuvé par le client", "Fiche projet signée", "1. Problème et objectif"],
+  ["Exigences", "Exigences signées", "Spécification des exigences signée", "2. Exigences"],
+  ["Conception", "Conception acceptée", "Architecture et maquettes approuvées", "3. Conception de la solution"],
+  ["Réalisation", "Version fonctionnelle livrée", "Code dans le dépôt et une démo", "4. Implémentation"],
+  ["Test", "Tests réussis", "Rapport de tests sans anomalie bloquante", "5. Tests"],
+  ["Recette", "Recette utilisateurs signée", "Procès-verbal de recette", "6. Recette utilisateurs"],
+  ["Mise en service", "Système en service", "Application publiée, utilisateurs formés", "7. Mise en service"],
+  ["Bénéfices", "Bénéfices mesurés", "Indicateurs avant et après", "8. Conclusions et bénéfices"],
+].forEach((s, i) => { STAGES[i].fr = s; });
+
+WAVE_NOTE.fr = [
+  "L'analyste clarifie le problème avec le client.",
+  "Pic : l'analyste rédige et négocie les exigences jusqu'à la signature.",
+  "L'analyste vérifie que la conception couvre chaque exigence.",
+  "Le plus bas : les développeurs construisent, l'analyste répond aux questions.",
+  "L'analyste prépare les scénarios de test à partir des exigences.",
+  "Pic : l'analyste conduit la recette avec les utilisateurs.",
+  "L'analyste aide à la formation et à la mise en service.",
+  "Pic : l'analyste mesure si le problème de départ est résolu.",
+];
+
+[
+  ["Le contrat est signé et la commande approuvée avant le début du travail.", "2 mars 2026"],
+  ["La découverte est faite, l'environnement est prêt, le client confirme le démarrage.", "30 mars 2026"],
+  ["Plans, configuration et un point de migration, dans le trimestre fiscal.", "11 mai 2026"],
+  ["Le travail financé est terminé et le client signe.", "22 juin 2026"],
+  ["Le dossier de preuves. Sans lui, aucune des tranches ci-dessus n'est payée.", "À chaque échéance"],
+].forEach(([d, dl], i) => { ECIF_ROWS[i].fr = d; ECIF_ROWS[i].deadline[2] = dl; });
+
+ECIF_GAP.fr = ["", "", "La conception n'a pas de tranche propre. Midpoint est versé quand la réalisation est franchie, dans l'ordre.", "",
+  "Les tests qualité n'ont pas de tranche propre. Ils font partie du Final Deliverable, avec la recette.", "",
+  "La mise en service n'est pas payée séparément dans ECIF.", "Le support après projet n'est pas payé dans ECIF."];
+
+T.fr = {
+  brand: "Jalons de projet", tabLearn: "1 · Leçon", tabSim: "2 · Simulation",
+  p1eyebrow: "Partie 1 · Leçon", p1title: "Ce qu'est un jalon et comment le reconnaître",
+  p1lede: "Pour les étudiants en Informatique appliquée. Dix minutes de lecture, puis vous construisez les jalons de votre projet dans la Partie 2.",
+  definition: "Un <b>jalon</b> est le moment où une étape se termine par une décision et une preuve acceptée par quelqu'un d'autre : une signature, un procès-verbal, un rapport approuvé. Il n'a pas de durée et ce n'est pas du travail. C'est une porte.",
+  quizEyebrow: "Exercice", quizTitle: "Jalon ou pas ?", quizHelp: "Choisissez une réponse pour chaque affirmation. L'explication apparaît tout de suite.",
+  isMs: "C'est un jalon", notMs: "Ce n'est pas un jalon", correct: "Correct", wrong: "Faux",
+  score: (a, n, t) => `Vous avez répondu à ${a} sur ${t}. Bonnes réponses : ${n}.`,
+  flowEyebrow: "Le chemin", flowTitle: "Des tâches au chapitre du mémoire",
+  waveEyebrow: "La vague de l'analyste", waveTitle: "Combien l'analyste travaille à chaque étape",
+  waveHelp: "Effort de l'analyste métier, de 1 à 5. Touchez une étape pour l'explication.",
+  waveAxis: "Effort", stagesEyebrow: "Le schéma", stagesTitle: "Les 8 étapes, chacune avec son jalon",
+  stagesHelp: "Chaque étape se ferme par un jalon. La preuve du jalon devient la matière du chapitre.",
+  msLabel: "Jalon", evLabel: "Preuve",
+  ctaText: "Le schéma est clair ? Passez à la simulation et placez les jalons sur votre propre projet.", ctaBtn: "Ouvrir la simulation",
+  p2eyebrow: "Partie 2 · Simulation", p2title: "Les jalons de votre projet",
+  p2lede: "Remplissez le titre, la description, l'échéance et le montant. Le tableau se calcule tout seul. Cochez les étapes franchies pour voir le montant versé.",
+  exampleNote: "Exemple rempli. Remplacez-le par votre projet. Vos données restent uniquement dans votre navigateur.",
+  fTitle: "Titre du projet", fDesc: "Description courte", fStart: "Début", fEnd: "Échéance finale", fAmount: "Montant total",
+  tableTitle: "Tableau des étapes", showEcif: "Comparer avec ECIF",
+  tableHelp: "Vous pouvez changer le pourcentage et l'échéance de chaque jalon. Une coche signifie que la preuve a été acceptée.",
+  thStage: "Étape", thMs: "Jalon et preuve", thDate: "Échéance", thPct: "%", thAmt: "Montant", thDone: "Franchi", thCh: "Chapitre", thEcif: "ECIF",
+  total: "Total", redate: "Recalculer les échéances", resplit: "Répartition par défaut", copy: "Copier le tableau", reset: "Vider le formulaire",
+  copied: "Tableau copié.", copyFail: "La copie n'a pas marché. Sélectionnez le texte ci-dessous.",
+  sPassed: "Jalons franchis", sReleased: "Montant versé", sNext: "Prochain jalon", sDays: "Jours avant l'échéance", none: "Tous franchis",
+  wPct: p => `Les pourcentages font ${p} %, pas 100 %. Corrigez la colonne %.`,
+  wOrder: n => `L'échéance du jalon ${n} est avant celle du précédent.`,
+  wEnd: n => `L'échéance du jalon ${n} dépasse l'échéance finale.`,
+  wDates: "L'échéance finale doit être après la date de début.",
+  ecifEyebrow: "L'exemple ECIF · l'argent d'une entreprise, pas le vôtre",
+  ecifTitle: "Comment paie un vrai financeur",
+  ecifHelp: "ECIF est un programme de financement pour les entreprises. Les montants et les échéances appartiennent à une entreprise, pas à l'étudiant. Remarquez que chaque étape n'a pas sa tranche, et que les tranches sont versées seulement dans l'ordre.",
+  ecifRow: "Tranche", ecifDesc: "Condition", ecifStatus: "État", paid: "Versé", waiting: "En attente", evidence: "Preuves",
+  ecifSum: (a, t) => `Avec vos coches, ECIF aurait versé ${a} sur ${t}.`,
+  anchor: "Tranche", gapLabel: "Pas de tranche",
+  exTitle: "Application de réservation pour la bibliothèque de la faculté",
+  exDesc: "Les étudiants réservent des livres et des places en salle de lecture depuis leur téléphone. La bibliothécaire confirme depuis un panneau d'administration.",
+};
+
 /* ---------- state ---------- */
 const KEY = "jaloane-sim-v1";
 const LANG_KEY = "jaloane-lang";
@@ -476,7 +566,9 @@ function exampleState(lang) {
   };
 }
 
-let lang = store.get(LANG_KEY) === "en" ? "en" : "ro";
+const LANGS = ["ro", "en", "fr"];
+const LOCALE = { ro: "ro-RO", en: "en-GB", fr: "fr-FR" };
+let lang = LANGS.includes(store.get(LANG_KEY)) ? store.get(LANG_KEY) : "ro";
 let tab = location.hash === "#simulare" || location.hash === "#simulation" ? "sim" : "learn";
 let S;
 try { S = JSON.parse(store.get(KEY)); } catch { S = null; }
@@ -489,15 +581,15 @@ const save = () => store.set(KEY, JSON.stringify(S));
 const t = k => T[lang][k];
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const money = (v, cur) => new Intl.NumberFormat(lang === "ro" ? "ro-RO" : "en-GB", { maximumFractionDigits: 0 }).format(Math.round(v)) + " " + cur;
-const fmtDate = s => s ? new Intl.DateTimeFormat(lang === "ro" ? "ro-RO" : "en-GB", { day: "numeric", month: "short", year: "numeric" }).format(parse(s)) : "—";
+const money = (v, cur) => new Intl.NumberFormat(LOCALE[lang], { maximumFractionDigits: 0 }).format(Math.round(v)) + " " + cur;
+const fmtDate = s => s ? new Intl.DateTimeFormat(LOCALE[lang], { day: "numeric", month: "short", year: "numeric" }).format(parse(s)) : "—";
 
 /* ---------- render: static copy ---------- */
 function renderCopy() {
   document.documentElement.lang = lang;
+  document.title = t("brand");
   document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = t(el.dataset.t); });
-  $("lang-ro").setAttribute("aria-pressed", lang === "ro");
-  $("lang-en").setAttribute("aria-pressed", lang === "en");
+  LANGS.forEach(l => $("lang-" + l).setAttribute("aria-pressed", lang === l));
   $("tab-learn").setAttribute("aria-pressed", tab === "learn");
   $("tab-sim").setAttribute("aria-pressed", tab === "sim");
   $("learn").hidden = tab !== "learn";
@@ -649,12 +741,12 @@ function renderEcif() {
   $("showEcif").checked = showEcif;
   if (!showEcif) return;
   const isPaid = ecifReleased();
-  const fmt = v => new Intl.NumberFormat(lang === "ro" ? "ro-RO" : "en-GB").format(v) + " USD";
+  const fmt = v => new Intl.NumberFormat(LOCALE[lang]).format(v) + " USD";
   let paid = 0;
   const rows = ECIF_ROWS.map(r => {
     const p = isPaid(r.id); if (p) paid += r.usd;
     const status = r.id === "poe" ? `<span class="pill no">${t("evidence")}</span>` : `<span class="pill ${p ? "yes" : "no"}">${p ? t("paid") : t("waiting")}</span>`;
-    return `<tr class="${p ? "paid" : ""}"><td><b>${esc(r.name)}</b></td><td>${esc(r[lang])}</td><td>${esc(r.deadline[lang === "ro" ? 0 : 1])}</td><td class="num">${fmt(r.usd)}</td><td>${status}</td></tr>`;
+    return `<tr class="${p ? "paid" : ""}"><td><b>${esc(r.name)}</b></td><td>${esc(r[lang])}</td><td>${esc(r.deadline[LANGS.indexOf(lang)])}</td><td class="num">${fmt(r.usd)}</td><td>${status}</td></tr>`;
   }).join("");
   $("ecifTbl").innerHTML = `<thead><tr><th>${t("ecifRow")}</th><th>${t("ecifDesc")}</th><th>${t("thDate")}</th><th class="num">USD</th><th>${t("ecifStatus")}</th></tr></thead><tbody>${rows}</tbody>`;
   $("ecifSum").textContent = T[lang].ecifSum(fmt(paid), fmt(ECIF_TOTAL_USD));
